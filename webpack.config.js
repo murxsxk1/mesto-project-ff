@@ -15,7 +15,6 @@ module.exports = {
     static: path.resolve(__dirname, "./dist"), // путь, куда "смотрит" режим разработчика
     compress: true, // это ускорит загрузку в режиме разработки
     port: 8080, // порт, чтобы открывать сайт по адресу localhost:8080, но можно поменять порт
-
     open: true, // сайт будет открываться сам при запуске npm run dev
   },
   module: {
@@ -41,8 +40,8 @@ module.exports = {
           {
             loader: "css-loader",
             options: {
-              importLoaders: 1
-            }
+              importLoaders: 1,
+            },
           },
           // Добавьте postcss-loader
           "postcss-loader",
