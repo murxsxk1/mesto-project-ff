@@ -58,13 +58,17 @@ const closeButtons = document.querySelectorAll('.popup__close');
 
 // Функция открытия поп-апа
 const openModal = (popup) => {
+  nameInput.value = document.querySelector('.profile__title').textContent;
+  jobInput.value = document.querySelector('.profile__description').textContent;
   popup.classList.add('popup__opened');
-}
+  document.addEventListener('keydown', escapeModaleClose);
+};
 
 // Функция закрытия поп-апа
 const closeModal = (popup) => {
   popup.classList.remove('popup__opened');
-}
+  document.removeEventListener('keydown', escapeModaleClose);
+};
 
 // Обработка кнопки редактирования профиля
 editButton.addEventListener('click', () => {
@@ -79,20 +83,20 @@ addButton.addEventListener('click', () => {
 // Обработка нажатия на изображение
 cardImage.forEach((item) => {
   item.addEventListener('click', () => {
-    openModal(imagePopup);
     imageElem.src = item.src;
     imageElem.alt = item.alt;
     imageCaption.textContent = item.alt;
-  })
-})
+    openModal(imagePopup);
+  });
+});
 
 // Реализация закрытия карточки
 closeButtons.forEach((item) => {
   item.addEventListener('click', () => {
     const popup = item.closest('.popup');
     closeModal(popup);
-  })
-})
+  });
+});
 
 // Реализация закрытия карточки при клике по оверлею
 popups.forEach((item) => {
@@ -100,17 +104,32 @@ popups.forEach((item) => {
     if (evt.target === item) {
       closeModal(item);
     }
-  })
-})
+  });
+});
 
-// Реализация закрытия карточки при нажатии ESC
-document.addEventListener('keydown', (evt) => {
+// Функция закрытия карточки при нажатии ESC
+const escapeModaleClose = (evt) => {
   if (evt.key === 'Escape') {
     const openedPopup = document.querySelector('.popup__opened');
     if (openedPopup){
       closeModal(openedPopup);
-    }
-  }
+    };
+  };
+};
 
- 
-})
+// Находим форму в DOM
+const formElement = document.querySelector('.popup__form');
+// Находим поля формы в DOM
+const nameInput = document.querySelector('.popup__input_type_name');
+const jobInput = document.querySelector('.popup__input_type_description');
+
+// Обработчик «отправки» формы
+function handleFormSubmit(evt) {
+    evt.preventDefault(); 
+    document.querySelector('.profile__title').textContent = nameInput.value;
+    document.querySelector('.profile__description').textContent = jobInput.value;
+    const openedPopup = document.querySelector('.popup__opened');
+    closeModal(openedPopup);
+}
+
+formElement.addEventListener('submit', handleFormSubmit);
