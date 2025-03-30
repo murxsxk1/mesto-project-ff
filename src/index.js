@@ -32,16 +32,22 @@ const urlInput = document.querySelector('.popup__input_type_url');
 const newPlace = document.querySelector('[name="new-place"]');
 
 //Функция создания карточки
-function createCard(makeCard, deleteProcessing, imageClick) {
+function createCard(makeCard, deleteProcessing, imageClick, cardLike) {
+  // Клонирование карточек
   const cardElement = cardTemplate.querySelector(".card").cloneNode(true);
 
+  // Сопоставление данных карточки и массива
   const cardImage = cardElement.querySelector(".card__image");
   cardImage.src = makeCard.link;
   cardImage.alt = makeCard.name;
 
+  // Обработчик клика по картинке
   cardImage.addEventListener('click', () => {
     imageClick(makeCard.link, makeCard.name);
   })
+  
+  // Обработчик клика по кнопке лайка
+  cardElement.addEventListener('click', cardLike);
 
   const cardTitle = cardElement.querySelector(".card__title");
   cardTitle.textContent = makeCard.name;
@@ -50,6 +56,13 @@ function createCard(makeCard, deleteProcessing, imageClick) {
   cardDeleteButton.addEventListener("click", () => deleteCard(cardElement));
 
   return cardElement;
+}
+
+// Функция лайка
+const cardLike = (evt) => {
+  if (evt.target.classList.contains('card__like-button')) {
+      evt.target.classList.toggle('card__like-button_is-active')
+  }
 }
 
 //Функция удаления карточки
@@ -68,7 +81,7 @@ const imageClick = (imageSrc, imageAlt) => {
 //Функция вывода карточки на страницу
 function renderCards() {
   initialCards.forEach(function (item) {
-    const card = createCard(item, deleteCard, imageClick);
+    const card = createCard(item, deleteCard, imageClick, cardLike);
     placesList.append(card);
   });
 }
@@ -100,8 +113,6 @@ editButton.addEventListener('click', () => {
 addButton.addEventListener('click', () => {
   openModal(addPopup);
 });
-
-
 
 // Реализация закрытия карточки
 closeButtons.forEach((item) => {
@@ -148,7 +159,7 @@ const handleCardSubmit = (evt) => {
   const newCard = {name: cardNameInput.value, link: urlInput.value};
   initialCards.push(newCard);
 
-  const card = createCard(newCard, deleteCard, imageClick);
+  const card = createCard(newCard, deleteCard, imageClick, cardLike);
   placesList.prepend(card);
 
   const openedPopup = document.querySelector('.popup__opened');
@@ -158,3 +169,5 @@ const handleCardSubmit = (evt) => {
 }
 
 newPlace.addEventListener('submit', handleCardSubmit);
+
+
