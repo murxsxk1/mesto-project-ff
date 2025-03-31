@@ -1,84 +1,80 @@
 //***Основной скрипт, собирающий все приложение***
 
 import "./pages/index.css";
-import { createCard, cardLike, deleteCard } from "./scripts/card.js";
+import { createCard, likeCard, deleteCard } from "./scripts/card.js";
 import { initialCards } from "./scripts/cards.js";
 import { openModal, closeModal } from "./scripts/modal.js";
 
 // === DOM узлы ===
 // *Попапы
-const editPopup = document.querySelector(".popup_type_edit"); // Попап редактирования профиля
-const addPopup = document.querySelector(".popup_type_new-card"); // Попап добавления карточки
-const imagePopup = document.querySelector(".popup_type_image"); // Попап с изображением
+const profileEditPopup = document.querySelector(".popup_type_edit"); // Попап редактирования профиля
+const cardAddPopup = document.querySelector(".popup_type_new-card"); // Попап добавления карточки
+const imageViewPopup = document.querySelector(".popup_type_image"); // Попап с изображением
 
 // *Поля ввода
-const nameInput = document.querySelector(".popup__input_type_name"); // Поле ввода имени
-const jobInput = document.querySelector(".popup__input_type_description"); // Поле ввода описания работы
+const profileNameInput = document.querySelector(".popup__input_type_name"); // Поле ввода имени
+const profileJobInput = document.querySelector(".popup__input_type_description"); // Поле ввода описания работы
 const cardNameInput = document.querySelector(".popup__input_type_card-name"); // Поле ввода названия места
-const urlInput = document.querySelector(".popup__input_type_url"); // Поле ввода URL изображения
+const cardUrlInput = document.querySelector(".popup__input_type_url"); // Поле ввода URL изображения
 
 // *Кнопки
-const closeButtons = document.querySelectorAll(".popup__close"); // Все кнопки закрытия попапов
-const editButton = document.querySelector(".profile__edit-button"); // Кнопка редактирования профиля
-const addButton = document.querySelector(".profile__add-button"); // Кнопка добавления новой карточки
+const popupCloseButtons = document.querySelectorAll(".popup__close"); // Все кнопки закрытия попапов
+const profileEditButton = document.querySelector(".profile__edit-button"); // Кнопка редактирования профиля
+const cardAddButton = document.querySelector(".profile__add-button"); // Кнопка добавления новой карточки
 
 // *Формы
-const formElement = document.querySelector(".popup__form"); // Форма редактирования профиля
-const newPlace = document.querySelector("[name='new-place']"); // Форма добавления нового места
+const profileEditForm = document.querySelector(".popup__form"); // Форма редактирования профиля
+const cardAddForm = document.querySelector("[name='new-place']"); // Форма добавления нового места
 
 // *Элементы изображений
-const imageElem = document.querySelector(".popup__image"); // Элемент изображения в попапе
-const imageCaption = document.querySelector(".popup__caption"); // Подпись к изображению
+const popupImageElement = document.querySelector(".popup__image"); // Элемент изображения в попапе
+const popupImageCaption = document.querySelector(".popup__caption"); // Подпись к изображению
+
+// *Элементы профиля
+const profileTitleElement = document.querySelector(".profile__title"); // Имя профиля
+const profileDescriptionElement = document.querySelector(".profile__description"); // Описание профиля
 
 // *Иные DOM узлы
-const placesList = document.querySelector(".places__list"); // Список карточек мест
+const cardsContainer = document.querySelector(".places__list"); // Список карточек мест
 
 // === Обработчики ===
-// *Обработчик нажатия на изображение карточки
-const imageClick = (imageSrc, imageAlt) => {
-  imageElem.src = imageSrc; // Устанавливаем источник изображения
-  imageElem.alt = imageAlt; // Устанавливаем альтернативный текст
-  imageCaption.textContent = imageAlt; // Устанавливаем подпись
-  openModal(imagePopup); // Открываем попап с изображением
-};
-
 // *Обработчик кнопки редактирования профиля
-editButton.addEventListener("click", () => {
+profileEditButton.addEventListener("click", () => {
   // Заполняем поля попапа текущими значениями из профиля
-  nameInput.value = document.querySelector(".profile__title").textContent;
-  jobInput.value = document.querySelector(".profile__description").textContent;
+  profileNameInput.value = profileTitleElement.textContent;
+  profileJobInput.value = profileDescriptionElement.textContent;
   // Открываем попап редактирования
-  openModal(editPopup);
+  openModal(profileEditPopup);
 });
 
 // *Обработчик кнопки добавления карточки
-addButton.addEventListener("click", () => {
-  openModal(addPopup); // Открываем попап добавления карточки
+cardAddButton.addEventListener("click", () => {
+  openModal(cardAddPopup); // Открываем попап добавления карточки
 });
 
 // *Обработчик формы редактирования профиля
-const handleFormSubmit = (evt) => {
+const handleProfileFormSubmit = (evt) => {
   evt.preventDefault(); // Предотвращаем стандартное поведение формы
   // Обновляем данные профиля из полей формы
-  document.querySelector(".profile__title").textContent = nameInput.value;
-  document.querySelector(".profile__description").textContent = jobInput.value;
+  profileTitleElement.textContent = profileNameInput.value;
+  profileDescriptionElement.textContent = profileJobInput.value;
   // Закрываем открытый попап
   const openedPopup = document.querySelector(".popup_is-opened");
   closeModal(openedPopup);
 };
 
 // *Вешаем обработчик на форму редактирования профиля
-formElement.addEventListener("submit", handleFormSubmit);
+profileEditForm.addEventListener("submit", handleProfileFormSubmit);
 
 // *Обработчик формы добавления новой карточки
-const handleCardSubmit = (evt) => {
+const handleCardFormSubmit = (evt) => {
   evt.preventDefault(); // Предотвращаем стандартное поведение формы
   // Создаем объект новой карточки из данных формы
-  const newCard = { name: cardNameInput.value, link: urlInput.value };
+  const newCard = { name: cardNameInput.value, link: cardUrlInput.value };
   initialCards.push(newCard); // Добавляем карточку в массив
   // Создаем и добавляем DOM-элемент карточки
-  const card = createCard(newCard, deleteCard, imageClick, cardLike);
-  placesList.prepend(card); // Добавляем в начало списка
+  const card = createCard(newCard, deleteCard, openImagePopup, likeCard);
+  cardsContainer.prepend(card); // Добавляем в начало списка
   // Закрываем попап
   const openedPopup = document.querySelector(".popup_is-opened");
   closeModal(openedPopup);
@@ -86,27 +82,35 @@ const handleCardSubmit = (evt) => {
 };
 
 // *Вешаем обработчик на форму добавления новой карточки
-newPlace.addEventListener("submit", handleCardSubmit);
+cardAddForm.addEventListener("submit", handleCardFormSubmit);
 
 // === Реализация закрытия попапов по кнопке закрытия ===
-closeButtons.forEach((item) => {
-  item.addEventListener("click", () => {
-    const popup = item.closest(".popup"); // Находим ближайший попап
+popupCloseButtons.forEach((button) => {
+  button.addEventListener("click", () => {
+    const popup = button.closest(".popup"); // Находим ближайший попап
     closeModal(popup); // Закрываем его
   });
 });
 
 // === Функции ===
+// *функция, которая отвечает за открытие попапа с увеличенным изображением карточки и заполнение его данными
+const openImagePopup = (imageSrc, imageAlt) => {
+  popupImageElement.src = imageSrc; // Устанавливаем источник изображения
+  popupImageElement.alt = imageAlt; // Устанавливаем альтернативный текст
+  popupImageCaption.textContent = imageAlt; // Устанавливаем подпись
+  openModal(imageViewPopup); // Открываем попап с изображением
+};
+
 // *Функция вывода карточек на страницу
-function renderCards() {
+function renderInitialCards() {
   // Для каждой карточки из начального массива
-  initialCards.forEach(function (item) {
+  initialCards.forEach((item) => {
     // Создаем DOM-элемент карточки
-    const card = createCard(item, deleteCard, imageClick, cardLike);
+    const card = createCard(item, deleteCard, openImagePopup, likeCard);
     // Добавляем карточку в список
-    placesList.append(card);
+    cardsContainer.append(card);
   });
 }
 
 // *Вызов функции с первоначальной отрисовкой карточек
-renderCards();
+renderInitialCards();
