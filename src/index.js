@@ -5,6 +5,7 @@ import { createCard, likeCard, deleteCard } from "./scripts/card.js";
 import { initialCards } from "./scripts/cards.js";
 import { openModal, closeModal } from "./scripts/modal.js";
 import { enableValidation, clearValidation } from './scripts/validation.js';
+import { getProfileInfo, getInitialCards } from './scripts/api.js'
 
 // === DOM узлы ===
 // *Попапы
@@ -37,6 +38,16 @@ const profileDescriptionElement = document.querySelector(".profile__description"
 
 // *Иные DOM узлы
 const cardsContainer = document.querySelector(".places__list"); // Список карточек мест
+
+// Конфиг валидации
+const validationConfig = {
+  formSelector: '.popup__form',                  // Селектор форм
+  inputSelector: '.popup__input',                // Селектор полей ввода
+  submitButtonSelector: '.popup__button',        // Селектор кнопок отправки
+  inactiveButtonClass: 'popup__button_disabled', // Класс неактивной кнопки
+  inputErrorClass: 'popup__input_type_error',    // Класс невалидного поля
+  errorClass: 'popup__error_visible'             // Класс видимого сообщения об ошибке
+};
 
 // === Обработчики ===
 // *Обработчик кнопки редактирования профиля
@@ -118,15 +129,30 @@ function renderInitialCards() {
 // *Вызов функции с первоначальной отрисовкой карточек
 renderInitialCards();
 
-// Конфиг валидации
-const validationConfig = {
-  formSelector: '.popup__form',                  // Селектор форм
-  inputSelector: '.popup__input',                // Селектор полей ввода
-  submitButtonSelector: '.popup__button',        // Селектор кнопок отправки
-  inactiveButtonClass: 'popup__button_disabled', // Класс неактивной кнопки
-  inputErrorClass: 'popup__input_type_error',    // Класс невалидного поля
-  errorClass: 'popup__error_visible'             // Класс видимого сообщения об ошибке
-};
-
 // Включаем валидацию для всех форм
 enableValidation(validationConfig);
+
+//Загрузка информации о пользователе с сервера
+getProfileInfo()
+  .then((result) => {
+
+  })
+  .catch((err) => {
+    console.log(err);
+  })
+
+getInitialCards()
+  .then((result) => {
+    popupImageElement.src = result.link;
+    popupImageElement.alt = result.name;
+    popupImageCaption.textContent = result.name;
+  })
+  .catch((err) => {
+    console.log(err);
+  })
+
+Promise.all([getProfileInfo(), getInitialCards()])
+  .then(([userData, cards])) => {
+    profileTitleElement.textContent = userData.name;
+    profileDescriptionElement.textContent = userData.about;
+  }
