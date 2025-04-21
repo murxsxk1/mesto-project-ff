@@ -13,6 +13,7 @@ function checkResponse(res) {
     return Promise.reject(`Ошибка: ${res.status}`);
 }
 
+// Загрузка информации о пользователе с сервера
 export const getProfileInfo = () => {
   return fetch(`${config.baseUrl}/users/me`, {
     headers: config.headers
@@ -20,6 +21,7 @@ export const getProfileInfo = () => {
     .then(checkResponse);
 }
 
+// Загрузка карточек с сервера
 export const getInitialCards = () => {
   return fetch(`${config.baseUrl}/cards`, {
     headers: config.headers
@@ -27,6 +29,7 @@ export const getInitialCards = () => {
     .then(checkResponse);
 }
 
+// Редактирование профиля
 export const saveProfileInfo = (name, about) => {
   return fetch(`${config.baseUrl}/users/me`, {
     method: 'PATCH',
@@ -34,6 +37,19 @@ export const saveProfileInfo = (name, about) => {
     body: JSON.stringify({
       name: name,
       about: about,
+    })
+  })
+    .then(checkResponse);
+}
+
+// Добавление новой карточки
+export const postNewCards = (name, link) => {
+  return fetch(`${config.baseUrl}/cards`, {
+    method: 'POST',
+    headers: config.headers,
+    body: JSON.stringify({
+      name: name,
+      link: link,
     })
   })
     .then(checkResponse);

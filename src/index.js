@@ -5,7 +5,7 @@ import { createCard, likeCard, deleteCard } from "./scripts/card.js";
 import { initialCards } from "./scripts/cards.js";
 import { openModal, closeModal } from "./scripts/modal.js";
 import { enableValidation, clearValidation } from './scripts/validation.js';
-import { getProfileInfo, getInitialCards, saveProfileInfo } from './scripts/api.js'
+import { getProfileInfo, getInitialCards, saveProfileInfo, postNewCards } from './scripts/api.js'
 
 // === DOM узлы ===
 // *Попапы
@@ -97,15 +97,22 @@ profileEditForm.addEventListener("submit", handleProfileFormSubmit);
 const handleCardFormSubmit = (evt) => {
   evt.preventDefault(); // Предотвращаем стандартное поведение формы
   // Создаем объект новой карточки из данных формы
-  const newCard = { name: cardNameInput.value, link: cardUrlInput.value };
-  initialCards.push(newCard); // Добавляем карточку в массив
-  // Создаем и добавляем DOM-элемент карточки
-  const card = createCard(newCard, deleteCard, openImagePopup, likeCard);
-  cardsContainer.prepend(card); // Добавляем в начало списка
-  // Закрываем попап
-  const openedPopup = document.querySelector(".popup_is-opened");
-  closeModal(openedPopup);
-  evt.target.reset(); // Очищаем форму
+  const name = cardNameInput.value;
+  const link = cardUrlInput.value
+
+  postNewCards(name, link)
+    .then((cardData) => {
+      // Создаем и добавляем DOM-элемент карточки
+      const card = createCard(cardData, deleteCard, openImagePopup, likeCard);
+      cardsContainer.prepend(card); // Добавляем в начало списка
+
+      // Закрываем попап
+      const openedPopup = document.querySelector(".popup_is-opened");
+      closeModal(openedPopup);
+
+      // Очищаем форму
+      evt.target.reset(); 
+    })
 };
 
 // *Вешаем обработчик на форму добавления новой карточки
