@@ -5,7 +5,7 @@ import { createCard, likeCard, deleteCard } from "./scripts/card.js";
 import { initialCards } from "./scripts/cards.js";
 import { openModal, closeModal } from "./scripts/modal.js";
 import { enableValidation, clearValidation } from './scripts/validation.js';
-import { getProfileInfo, getInitialCards } from './scripts/api.js'
+import { getProfileInfo, getInitialCards, saveProfileInfo } from './scripts/api.js'
 
 // === DOM узлы ===
 // *Попапы
@@ -40,7 +40,6 @@ const profileAvatarElement = document.querySelector('.profile__image');
 // *Иные DOM узлы
 const cardsContainer = document.querySelector(".places__list"); // Список карточек мест
 
-
 let userId;
 
 // Конфиг валидации
@@ -74,8 +73,18 @@ cardAddButton.addEventListener("click", () => {
 const handleProfileFormSubmit = (evt) => {
   evt.preventDefault(); // Предотвращаем стандартное поведение формы
   // Обновляем данные профиля из полей формы
-  profileTitleElement.textContent = profileNameInput.value;
-  profileDescriptionElement.textContent = profileJobInput.value;
+  const name = profileNameInput.value;
+  const about = profileJobInput.value;
+  
+  saveProfileInfo(name, about)
+    .then((userData) => {
+      profileTitleElement.textContent = userData.name;
+      profileDescriptionElement.textContent = userData.about;
+    })
+    .catch((err) => {
+      console.log(`Ошибка при загрузке данных: ${err}`);
+    })
+    
   // Закрываем открытый попап
   const openedPopup = document.querySelector(".popup_is-opened");
   closeModal(openedPopup);

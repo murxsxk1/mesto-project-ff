@@ -26,3 +26,15 @@ export const getInitialCards = () => {
   })
     .then(checkResponse);
 }
+
+export const saveProfileInfo = (name, about) => {
+  return fetch(`${config.baseUrl}/users/me`, {
+    method: 'PATCH',
+    headers: config.headers,
+    body: JSON.stringify({
+      name: name,
+      about: about,
+    })
+  })
+    .then(checkResponse);
+}
