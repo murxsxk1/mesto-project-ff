@@ -5,12 +5,7 @@ const cardTemplate = document.querySelector("#card-template").content;
 
 // === Функции ===
 // *Функция создания карточки
-function createCard(
-  cardData,
-  handleDeleteCard,
-  handleImageClick,
-  handleLikeCard
-) {
+function createCard(cardData,handleDeleteCard,handleImageClick,handleLikeCard, userId) {
   const cardElement = cardTemplate.querySelector(".card").cloneNode(true);
   // Находим и заполняем изображение карточки
   const cardImage = cardElement.querySelector(".card__image");
@@ -21,17 +16,31 @@ function createCard(
     // При клике вызываем переданную функцию handleImageClick с параметрами изображения
     handleImageClick(cardData.link, cardData.name);
   });
-  // Добавляем обработчик лайка на всю карточку (делегирование событий)
-  cardElement.addEventListener("click", handleLikeCard);
   // Находим и заполняем заголовок карточки
   const cardTitle = cardElement.querySelector(".card__title");
   cardTitle.textContent = cardData.name;
+
   // Находим кнопку удаления и добавляем обработчик
   const cardDeleteButton = cardElement.querySelector(".card__delete-button");
-  cardDeleteButton.addEventListener("click", () =>
-    handleDeleteCard(cardElement)
-  );
-  // Возвращаем готовый DOM-элемент карточки
+
+  if (cardData.owner && cardData.owner._id !== userId) {
+    cardDeleteButton.remove();
+  } else {
+    cardDeleteButton.addEventListener('click', () => {
+      handleDeleteCard(cardElement);
+    })
+  }
+
+  const cardLikeButton = cardElement.querySelector('.card__like-button');
+
+  if (cardData.likes && cardData.likes.some(user => user._id === userId)) {
+    cardLikeButton.classList.add('card__like-button_is-active');
+  }
+
+  cardLikeButton.addEventListener('click', (evt) => {
+    handleLikeCard(evt);
+  });
+
   return cardElement;
 }
 

@@ -35,9 +35,13 @@ const popupImageCaption = document.querySelector(".popup__caption"); // Подп
 // *Элементы профиля
 const profileTitleElement = document.querySelector(".profile__title"); // Имя профиля
 const profileDescriptionElement = document.querySelector(".profile__description"); // Описание профиля
+const profileAvatarElement = document.querySelector('.profile__image');
 
 // *Иные DOM узлы
 const cardsContainer = document.querySelector(".places__list"); // Список карточек мест
+
+
+let userId;
 
 // Конфиг валидации
 const validationConfig = {
@@ -116,43 +120,25 @@ const openImagePopup = (imageSrc, imageAlt) => {
 };
 
 // *Функция вывода карточек на страницу
-function renderInitialCards() {
-  // Для каждой карточки из начального массива
-  initialCards.forEach((item) => {
-    // Создаем DOM-элемент карточки
-    const card = createCard(item, deleteCard, openImagePopup, likeCard);
+function renderCard(cardData) {
+  const card = createCard(cardData, deleteCard, openImagePopup, likeCard, userId);
     // Добавляем карточку в список
     cardsContainer.append(card);
-  });
 }
 
-// *Вызов функции с первоначальной отрисовкой карточек
-renderInitialCards();
+Promise.all([getProfileInfo(), getInitialCards()])
+  .then(([userData, cards]) => {
+    userId = userData._id
+    profileTitleElement.textContent = userData.name;
+    profileDescriptionElement.textContent = userData.about;
+  
+  cards.forEach((cardData) => {
+    renderCard(cardData);
+  });
+  })
+  .catch((err) => {
+    console.log(`Ошибка при загрузке данных: ${err}`);
+  })
 
 // Включаем валидацию для всех форм
 enableValidation(validationConfig);
-
-//Загрузка информации о пользователе с сервера
-getProfileInfo()
-  .then((result) => {
-
-  })
-  .catch((err) => {
-    console.log(err);
-  })
-
-getInitialCards()
-  .then((result) => {
-    popupImageElement.src = result.link;
-    popupImageElement.alt = result.name;
-    popupImageCaption.textContent = result.name;
-  })
-  .catch((err) => {
-    console.log(err);
-  })
-
-Promise.all([getProfileInfo(), getInitialCards()])
-  .then(([userData, cards])) => {
-    profileTitleElement.textContent = userData.name;
-    profileDescriptionElement.textContent = userData.about;
-  }
