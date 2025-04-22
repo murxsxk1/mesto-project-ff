@@ -1,11 +1,11 @@
 // ***Скрипт, содержащий функции для работы карточек***
-
+import { deleteNewCards } from './api.js';
 // Получаем шаблон карточки из HTML
 const cardTemplate = document.querySelector("#card-template").content;
 
 // === Функции ===
 // *Функция создания карточки
-function createCard(cardData,handleDeleteCard,handleImageClick,handleLikeCard, userId) {
+function createCard(cardData,deleteCard,handleImageClick,handleLikeCard, userId) {
   const cardElement = cardTemplate.querySelector(".card").cloneNode(true);
   // Находим и заполняем изображение карточки
   const cardImage = cardElement.querySelector(".card__image");
@@ -27,7 +27,7 @@ function createCard(cardData,handleDeleteCard,handleImageClick,handleLikeCard, u
     cardDeleteButton.remove();
   } else {
     cardDeleteButton.addEventListener('click', () => {
-      handleDeleteCard(cardElement);
+      deleteCard(cardElement, cardData._id);
     })
   }
 
@@ -41,13 +41,22 @@ function createCard(cardData,handleDeleteCard,handleImageClick,handleLikeCard, u
     handleLikeCard(evt);
   });
 
+  const cardLikeCounter = cardElement.querySelector('.card__like-counter');
+  cardLikeCounter.textContent = cardData.likes.length;
+
   return cardElement;
 }
 
 // *Функция удаления карточки
-function deleteCard(cardElement) {
-  // Удаляем карточку из DOM
-  cardElement.remove();
+function deleteCard(cardElement, cardId) {
+  deleteNewCards(cardId)
+    .then(() => {
+      // Удаляем карточку из DOM
+      cardElement.remove();
+    })
+    .catch((err) => {
+      console.log(`Ошибка при загрузке данных: ${err}`);
+    })
 }
 
 // *Функция лайка карточки

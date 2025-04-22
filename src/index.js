@@ -5,7 +5,7 @@ import { createCard, likeCard, deleteCard } from "./scripts/card.js";
 import { initialCards } from "./scripts/cards.js";
 import { openModal, closeModal } from "./scripts/modal.js";
 import { enableValidation, clearValidation } from './scripts/validation.js';
-import { getProfileInfo, getInitialCards, saveProfileInfo, postNewCards } from './scripts/api.js'
+import { getProfileInfo, getInitialCards, saveProfileInfo, postNewCards, } from './scripts/api.js'
 
 // === DOM узлы ===
 // *Попапы
@@ -103,7 +103,7 @@ const handleCardFormSubmit = (evt) => {
   postNewCards(name, link)
     .then((cardData) => {
       // Создаем и добавляем DOM-элемент карточки
-      const card = createCard(cardData, deleteCard, openImagePopup, likeCard);
+      const card = createCard(cardData, deleteCard, openImagePopup, likeCard, userId);
       cardsContainer.prepend(card); // Добавляем в начало списка
 
       // Закрываем попап

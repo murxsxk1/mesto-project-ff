@@ -54,3 +54,12 @@ export const postNewCards = (name, link) => {
   })
     .then(checkResponse);
 }
+
+// Удаление карточки
+export const deleteNewCards = (cardId) => {
+  return fetch(`${config.baseUrl}/cards/${cardId}`, {
+    method: 'DELETE',
+    headers: config.headers,
+  })
+    .then(checkResponse);
+}
