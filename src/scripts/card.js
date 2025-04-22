@@ -1,5 +1,5 @@
 // ***Скрипт, содержащий функции для работы карточек***
-import { deleteNewCards } from './api.js';
+import { deleteNewCards, toggleLike } from './api.js';
 // Получаем шаблон карточки из HTML
 const cardTemplate = document.querySelector("#card-template").content;
 
@@ -38,7 +38,7 @@ function createCard(cardData,deleteCard,handleImageClick,handleLikeCard, userId)
   }
 
   cardLikeButton.addEventListener('click', (evt) => {
-    handleLikeCard(evt);
+    handleLikeCard(evt, cardData._id);
   });
 
   const cardLikeCounter = cardElement.querySelector('.card__like-counter');
@@ -60,12 +60,20 @@ function deleteCard(cardElement, cardId) {
 }
 
 // *Функция лайка карточки
-function likeCard(evt) {
-  // Проверяем, что клик был именно по кнопке лайка
-  if (evt.target.classList.contains("card__like-button")) {
-    // Переключаем класс, отвечающий за активное состояние лайка
-    evt.target.classList.toggle("card__like-button_is-active");
-  }
+function likeCard(evt, cardId) {
+  
+  const likeButton = evt.target;
+  const isLiked = likeButton.classList.contains('card__like-button_is-active');
+
+  toggleLike(cardId, !isLiked)
+    .then((res) => {
+      const cardLikeCounter = likeButton.closest('.card').querySelector('.card__like-counter');
+      cardLikeCounter.textContent = res.likes.length;
+      likeButton.classList.toggle("card__like-button_is-active");
+    })
+    .catch((err) => {
+      console.log(`Ошибка при загрузке данных: ${err}`);
+    })
 }
 
 export { createCard, likeCard, deleteCard };

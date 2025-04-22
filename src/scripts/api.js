@@ -63,3 +63,21 @@ export const deleteNewCards = (cardId) => {
   })
     .then(checkResponse);
 }
+
+// Постановка и снятие лайка
+export const toggleLike = (cardId, isLiked) => {
+  return fetch(`${config.baseUrl}/cards/likes/${cardId}`, {
+    method: isLiked ? 'PUT' : 'DELETE',
+    headers: config.headers,
+  })
+    .then(checkResponse);
+}
+
+// Обновление аватара пользователя
+export const updateAvatar = (avatar) => {
+  return fetch(`${config.baseUrl}/users/me/avatar`, {
+    method: 'PATCH',
+    headers: config.headers,
+  })
+    .then(checkResponse);
+}
