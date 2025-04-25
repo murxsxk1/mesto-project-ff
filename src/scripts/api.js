@@ -78,6 +78,9 @@ export const updateAvatar = (avatar) => {
   return fetch(`${config.baseUrl}/users/me/avatar`, {
     method: 'PATCH',
     headers: config.headers,
+    body: JSON.stringify({
+      avatar: avatar,
+    })
   })
     .then(checkResponse);
 }

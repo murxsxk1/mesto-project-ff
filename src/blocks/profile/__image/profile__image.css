@@ -18,11 +18,11 @@
   background-color: rgba(0, 0, 0, 0.8);
 }
 
-.profile__image-edit-button {
+.profile__avatar-edit-button {
   display: none;
 }
 
-.profile__image:hover .profile__image-edit-button {
+.profile__image:hover .profile__avatar-edit-button {
   width: 26px;
   height: 26px;
   background: url('../../../images/edit-icon.svg') center no-repeat;
@@ -30,7 +30,6 @@
   cursor: pointer;
   border: none;
   display: block;
-  
 }
 
 @media screen and (max-width: 740px) {
