@@ -2,7 +2,6 @@
 
 import "./pages/index.css";
 import { createCard, likeCard, deleteCard } from "./scripts/card.js";
-import { initialCards } from "./scripts/cards.js";
 import { openModal, closeModal } from "./scripts/modal.js";
 import { enableValidation, clearValidation } from './scripts/validation.js';
 import { getProfileInfo, getInitialCards, saveProfileInfo, postNewCards, updateAvatar } from './scripts/api.js'
@@ -13,6 +12,7 @@ const profileEditPopup = document.querySelector(".popup_type_edit"); // Попа
 const cardAddPopup = document.querySelector(".popup_type_new-card"); // Попап добавления карточки
 const imageViewPopup = document.querySelector(".popup_type_image"); // Попап с изображением
 const avatarEditPopup = document.querySelector('.popup_type_new-avatar'); // Попап редактирования аватара
+
 
 // *Поля ввода
 const profileNameInput = document.querySelector(".popup__input_type_name"); // Поле ввода имени

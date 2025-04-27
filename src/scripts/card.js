@@ -1,5 +1,6 @@
 // ***Скрипт, содержащий функции для работы карточек***
 import { deleteNewCards, toggleLike } from './api.js';
+import { openModal, closeModal } from './modal.js';
 // Получаем шаблон карточки из HTML
 const cardTemplate = document.querySelector("#card-template").content;
 
@@ -33,7 +34,7 @@ function createCard(cardData,deleteCard,handleImageClick,handleLikeCard, userId)
 
   const cardLikeButton = cardElement.querySelector('.card__like-button');
 
-  if (cardData.likes && cardData.likes.some(user => user._id === userId)) {
+  if (cardData.likes.some(user => user._id === userId)) {
     cardLikeButton.classList.add('card__like-button_is-active');
   }
 
@@ -49,14 +50,27 @@ function createCard(cardData,deleteCard,handleImageClick,handleLikeCard, userId)
 
 // *Функция удаления карточки
 function deleteCard(cardElement, cardId) {
-  deleteNewCards(cardId)
-    .then(() => {
-      // Удаляем карточку из DOM
-      cardElement.remove();
-    })
-    .catch((err) => {
-      console.log(`Ошибка при загрузке данных: ${err}`);
-    })
+  const deletionCardPopup = document.querySelector('.popup_type_delete-card');
+  const confirmButton = deletionCardPopup.querySelector('.popup__button');
+  
+  // Открываем попап подтверждения
+  openModal(deletionCardPopup);
+  
+  // Обработчик для кнопки "Да"
+  function handleConfirm() {
+    deleteNewCards(cardId)
+      .then(() => {
+        cardElement.remove();
+        closeModal(deletionCardPopup);
+      })
+      .catch(err => console.log(`Ошибка: ${err}`));
+    
+    // Удаляем обработчик после использования
+    confirmButton.removeEventListener('click', handleConfirm);
+  }
+  
+  // Вешаем обработчик на кнопку "Да"
+  confirmButton.addEventListener('click', handleConfirm);
 }
 
 // *Функция лайка карточки
