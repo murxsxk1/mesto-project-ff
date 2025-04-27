@@ -19,7 +19,7 @@ function hideInputError(formElement, inputElement, config) {
   // Скрываем сообщение об ошибке
   errorElement.classList.remove(config.errorClass);
   // Очищаем текст ошибки
-  errorElement.textContent = "";
+  errorElement.textContent = '';
 }
 
 // Основная функция включения валидации
@@ -56,7 +56,7 @@ function enableValidation(config) {
       inputElement.setCustomValidity(inputElement.dataset.errorMessage);
     } else {
       // Очищаем кастомное сообщение
-      inputElement.setCustomValidity("");
+      inputElement.setCustomValidity('');
     }
     // Проверяем общую валидность поля
     if (!inputElement.validity.valid) {
@@ -87,7 +87,7 @@ function enableValidation(config) {
     toggleButtonState(inputList, buttonElement);
     // Добавляем обработчик input для каждого поля
     inputList.forEach((inputElement) => {
-      inputElement.addEventListener("input", () => {
+      inputElement.addEventListener('input', () => {
         // При каждом вводе проверяем валидность поля
         isValid(formElement, inputElement);
         // И проверяем состояние кнопки
@@ -108,7 +108,7 @@ function clearValidation(formElement, config) {
 
   inputList.forEach((input) => {
     hideInputError(formElement, input, config);
-    input.setCustomValidity("");
+    input.setCustomValidity('');
   });
 
   buttonElement.classList.add(config.inactiveButtonClass);
