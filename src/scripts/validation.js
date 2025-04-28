@@ -24,6 +24,18 @@ function hideInputError(formElement, inputElement, config) {
   errorElement.textContent = "";
 }
 
+// Функция деактивации кнопки
+function disableButton(buttonElement, config) {
+  buttonElement.classList.add(config.inactiveButtonClass); // Добавляем класс неактивной кнопки
+  buttonElement.disabled = true; // Деактивируем кнопку
+}
+
+// Функция активации кнопки
+function enableButton(buttonElement, config) {
+  buttonElement.classList.remove(config.inactiveButtonClass); // Убираем класс неактивной кнопки
+  buttonElement.disabled = false; // Активируем кнопку
+}
+
 // Основная функция включения валидации
 function enableValidation(config) {
   // Получаем все формы по переданному селектору
@@ -40,12 +52,10 @@ function enableValidation(config) {
   const toggleButtonState = (inputList, buttonElement) => {
     if (hasInvalidInput(inputList)) {
       // Если есть невалидные поля - деактивируем кнопку
-      buttonElement.disabled = true;
-      buttonElement.classList.add(config.inactiveButtonClass);
+      disableButton(buttonElement, config);
     } else {
       // Если все поля валидны - активируем кнопку
-      buttonElement.disabled = false;
-      buttonElement.classList.remove(config.inactiveButtonClass);
+      enableButton(buttonElement, config);
     }
   };
 
@@ -115,8 +125,7 @@ function clearValidation(formElement, config) {
   });
 
   // Деактивируем кнопку отправки формы
-  buttonElement.classList.add(config.inactiveButtonClass); // Добавляем класс неактивной кнопки
-  buttonElement.disabled = true; // Деактивируем кнопку
+  disableButton(buttonElement, config);
 }
 
 export { enableValidation, clearValidation };

@@ -27,10 +27,6 @@
   cursor: default;
 }
 
-.popup_type_delete-card .popup__button {
-  margin-top: 38px;
-}
-
 @media screen and (max-width: 568px) {
   .popup__button {
     font-size: 14px;
